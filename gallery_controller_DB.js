@@ -17,6 +17,26 @@ var con = mysql.createConnection({
   database: "imageGallery",
 });
 
+con.query(`CREATE DATABASE IF NOT EXISTS imageGallery`, (err, result) => {
+  if (err) throw err;
+});
+con.query(
+  `CREATE TABLE IF NOT EXISTS images
+    (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255), fullpath VARCHAR(255),
+     name VARCHAR(255), modified VARCHAR(255), galleryID INT)`,
+  (err, result) => {
+    if (err) throw err;
+  }
+);
+con.query(
+  `CREATE TABLE IF NOT EXISTS galleries 
+      (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255),
+       name VARCHAR(255))`,
+  (err, result) => {
+    if (err) throw err;
+  }
+);
+
 // lists all galleries
 app.get("/gallery", (req, res) => {
   const getTitleImages = (callback) => {
