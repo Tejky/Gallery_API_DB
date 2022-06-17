@@ -1,9 +1,10 @@
-const mysql = require("mysql2");
 const express = require("express");
-const app = express();
+const app = express.Router();
+const mysql = require("mysql2");
 const path = require("path");
 const utility = require("./utilityDB.js");
 const fs = require("fs");
+const index = require("./index.js");
 
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -11,32 +12,13 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-var con = mysql.createConnection({
+con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "12345",
   database: "imageGallery",
 });
 
-con.query(`CREATE DATABASE IF NOT EXISTS imageGallery`, (err, result) => {
-  if (err) throw err;
-});
-con.query(
-  `CREATE TABLE IF NOT EXISTS images
-  (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255), fullpath VARCHAR(255),
-   name VARCHAR(255), modified VARCHAR(255), galleryID INT)`,
-  (err, result) => {
-    if (err) throw err;
-  }
-);
-con.query(
-  `CREATE TABLE IF NOT EXISTS galleries 
-    (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255),
-     name VARCHAR(255))`,
-  (err, result) => {
-    if (err) throw err;
-  }
-);
 // lists photos in gallery
 app.get("/gallery/:path(*)", (req, res) => {
   var sqlID = `SELECT id, path, name
@@ -185,6 +167,4 @@ app.post("/gallery/:path(*)", upload.single("image"), (req, res) => {
   checkDirExist();
 });
 
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
+module.exports = app;

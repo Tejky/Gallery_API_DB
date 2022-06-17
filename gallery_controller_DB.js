@@ -1,41 +1,22 @@
-const mysql = require("mysql2");
 const express = require("express");
-const app = express();
+const app = express.Router();
+const mysql = require("mysql2");
 const fs = require("fs");
 const Ajv = require("ajv");
 const ajv = new Ajv();
+const index = require("./index.js");
 
 const imageSchema = require("./gallerySchema.json");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-var con = mysql.createConnection({
+con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "12345",
   database: "imageGallery",
 });
-
-con.query(`CREATE DATABASE IF NOT EXISTS imageGallery`, (err, result) => {
-  if (err) throw err;
-});
-con.query(
-  `CREATE TABLE IF NOT EXISTS images
-    (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255), fullpath VARCHAR(255),
-     name VARCHAR(255), modified VARCHAR(255), galleryID INT)`,
-  (err, result) => {
-    if (err) throw err;
-  }
-);
-con.query(
-  `CREATE TABLE IF NOT EXISTS galleries 
-      (id INT AUTO_INCREMENT PRIMARY KEY, path VARCHAR(255),
-       name VARCHAR(255))`,
-  (err, result) => {
-    if (err) throw err;
-  }
-);
 
 // lists all galleries
 app.get("/gallery", (req, res) => {
@@ -138,6 +119,4 @@ app.post("/gallery", (req, res) => {
   };
 });
 
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
+module.exports = app;

@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+const app = express.Router();
 const path = require("path");
 const fs = require("fs");
 const sharp = require("sharp");
@@ -47,6 +47,4 @@ app.get("/images/:resolution/:path(*)", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
+module.exports = app;
